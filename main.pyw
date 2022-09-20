@@ -2,16 +2,20 @@ import os.path
 from os import listdir
 from os.path import isfile, join
 import shutil
+import sched
+import time
 
 """
 @author: Sami Hindi
 @email: sami@samihindi.com
 @website: https://samihindi.com
 @date: 20.09.2022 (EU)
-@version: 0.0.1
+@version: 0.0.2
 @description: This script is used to sort files in a directory into different folders based on their file extension.
 @license: MIT
 """
+
+event_scheduler = sched.scheduler(time.time, time.sleep)
 
 
 # Function to only return files from a certain directory
@@ -22,7 +26,8 @@ def files_in_dir(directory: str):
         return None
 
 
-if __name__ == "__main__":
+# Function which utilizes the files_in_dir function to sort files into different folders based on their file extension
+def manage():
     files = files_in_dir("C:\\Users\\Sami\\Downloads")
     if files is None:
         print("Directory does not exist.")
@@ -42,3 +47,10 @@ if __name__ == "__main__":
             shutil.move("C:\\Users\\Sami\\Downloads\\" + file, "D:\\Downloads\\Binaries\\" + file)
         else:
             shutil.move("C:\\Users\\Sami\\Downloads\\" + file, "D:\\Downloads\\Other\\" + file)
+    event_scheduler.enter(30, 1, manage, (10, ))
+
+
+# Main
+if __name__ == "__main__":
+    event_scheduler.enter(30, 1, manage, (10, ))
+    event_scheduler.run()
